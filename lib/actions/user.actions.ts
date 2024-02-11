@@ -5,6 +5,8 @@ import { connectToDatabase } from "../database";
 import User from "../database/model/user.model";
 import { revalidatePath } from "next/cache";
 import { json } from "stream/consumers";
+import Order from "../database/model/order.model";
+import Event from "../database/model/event.model";
 
 export async function createUser(user: CreateUserParams) {
   try {
@@ -46,6 +48,21 @@ export async function deleteUser(clerkId: String) {
     if (!userToDelete) {
       throw new Error("User not found.");
     }
+
+    // Unlink relationships
+    await Promise.all([
+      // Update the 'events' collection to remove references to the user
+      Event.updateMany(
+        { _id: { $in: userToDelete.events } },
+        { $pull: { organizer: userToDelete._id } }
+      ),
+
+      // Update the 'orders' collection to remove references to the user
+      Order.updateMany(
+        { _id: { $in: userToDelete.orders } },
+        { $unset: { buyer: 1 } }
+      ),
+    ]);
 
     // Delete user
     const deletedUser = await User.findByIdAndDelete(userToDelete._id);
