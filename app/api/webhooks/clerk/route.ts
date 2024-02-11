@@ -2,7 +2,7 @@ import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { emailAddresses } from "@clerk/nextjs/api";
-import { createUser } from "@/lib/actions/user.actions";
+import { createUser, deleteUser } from "@/lib/actions/user.actions";
 import { clerkClient } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 
@@ -78,7 +78,17 @@ export async function POST(req: Request) {
         },
       });
     }
-    return NextResponse.json({ message: "OK", user: newUser });
+    return NextResponse.json({ message: "OK, user created.", user: newUser });
+  }
+
+  if (eventType === "user.deleted") {
+    const { id } = evt.data;
+    const deletedUser = await deleteUser(id!);
+
+    return NextResponse.json({
+      message: "OK, user deleted.",
+      user: deletedUser,
+    });
   }
 
   return new Response("", { status: 200 });
