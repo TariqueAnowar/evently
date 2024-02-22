@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import {
   Sheet,
   SheetContent,
@@ -12,9 +13,10 @@ import { Separator } from "../ui/separator";
 import MobNavItems from "./MobNavItems";
 
 export const MobNavMenu = () => {
+  const [open, setOpen] = useState(false);
   return (
     <nav className="md:hidden">
-      <Sheet>
+      <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger className="align-middle">
           <Image
             src="/assets/icons/menu.svg"
@@ -32,7 +34,7 @@ export const MobNavMenu = () => {
             height={38}
           />
           <Separator />
-          <MobNavItems />
+          <MobNavItems setOpen={setOpen} />
         </SheetContent>
       </Sheet>
     </nav>

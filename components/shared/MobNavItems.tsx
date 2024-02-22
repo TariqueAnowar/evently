@@ -6,7 +6,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 
-const MobNavItems = () => {
+type Props = {
+  setOpen: (value: boolean) => void;
+};
+const MobNavItems = ({ setOpen }: Props) => {
   const pathname = usePathname();
   return (
     <ul className="md:flex-between flex w-full flex-col items-start gap-5 md:flex-row">
@@ -19,7 +22,9 @@ const MobNavItems = () => {
               isActive && "text-primary-500"
             } flex-center p-medium-16 whitespace-nowrap`}
           >
-            <Link href={link.route}>{link.label}</Link>
+            <Link href={link.route} onClick={(e) => setOpen(false)}>
+              {link.label}
+            </Link>
           </li>
         );
       })}
