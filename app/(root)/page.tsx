@@ -1,6 +1,7 @@
 import Collection from "@/components/shared/Collection";
 import { Button } from "@/components/ui/button";
 import { getAllEvents } from "@/lib/actions/event.actions";
+import { auth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -9,10 +10,11 @@ export default async function Home() {
     query: "",
     category: "",
     page: 1,
-    limit: 6,
+    limit: 10,
   });
 
-  //console.log(events);
+  const { sessionClaims } = auth();
+  const userId = sessionClaims?.mongodb_userId as string;
 
   return (
     <>
@@ -60,6 +62,7 @@ export default async function Home() {
           page={1}
           totalPages={2}
           urlParamName=""
+          userId={userId}
         />
       </section>
     </>

@@ -4,24 +4,23 @@ import { auth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import DeleteConfirmation from "@/components/shared/DeleteConfirmation";
 
 type CardProps = {
   event: IEvent;
   hasOrderLink?: boolean;
   hidePrice?: boolean;
+  userId: string;
 };
 
-const Card = ({ event, hasOrderLink, hidePrice }: CardProps) => {
-  const { sessionClaims } = auth();
-  const userId = sessionClaims?.mongodb_userId as string;
+const Card = ({ event, hasOrderLink, hidePrice, userId }: CardProps) => {
   const isEventCreator = userId === event.organizer?._id.toString();
 
-  console.log({
-    userId,
-    isEventCreator,
-    hidePrice,
-  });
-  console.log(!hidePrice);
+  // console.log({
+  //   userId,
+  //   isEventCreator,
+  //   hidePrice,
+  // });
 
   return (
     <div className="relative flex flex-col mt-6 text-gray-700 bg-white shadow-md bg-clip-border rounded-xl w-96">
@@ -37,27 +36,28 @@ const Card = ({ event, hasOrderLink, hidePrice }: CardProps) => {
         </Link>
         {isEventCreator && !hidePrice && (
           <div className="absolute top-2 right-2 rounded-xl bg-white p-3 shadow-sm transition-all flex flex-col gap-5">
-            <Image
-              src="/assets/icons/edit.svg"
-              alt="event"
-              height={20}
-              width={20}
-            />
-            <Image
-              src="/assets/icons/delete.svg"
-              alt="event"
-              height={20}
-              width={20}
-            />
+            <Link href={`/events/${event._id}/update`}>
+              <Image
+                src="/assets/icons/edit.svg"
+                alt="event"
+                height={20}
+                width={20}
+              />
+            </Link>
+
+            <DeleteConfirmation eventId={event._id} />
           </div>
         )}
+        <div className="absolute bottom-2 right-2 rounded-full bg-gray-600  px-3 py-1 shadow-sm transition-all cursor-pointer">
+          <p className="text-white/90 text-xs">{event.category?.name}</p>
+        </div>
       </div>
       <div className="p-6 cursor-default">
-        <div className="flex items-center justify-between mb-2 ">
-          <h5 className="block  font-sans text-xl antialiased font-semibold leading-snug tracking-normal text-blue-gray-900">
-            {event.title}
+        <div className="flex items-center justify-between mb-2 gap-4">
+          <h5 className="block  font-sans text-xl antialiased font-semibold leading-snug tracking-normal text-blue-gray-900 w-4/6">
+            <p className="line-clamp-2">{event.title}</p>
           </h5>
-          <span className="bg-green-200 rounded-full text-sm px-3 py-0 ">
+          <span className="bg-green-200 w-2/6  rounded-full text-sm px-3 py-1 flex items-center justify-center">
             {event.isFree ? "Free" : `$ ${event.price}`}
           </span>
         </div>

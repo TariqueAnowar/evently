@@ -5,7 +5,6 @@ import React from "react";
 const createEvent = () => {
   const { sessionClaims } = auth();
   const userId = sessionClaims?.mongodb_userId as string;
-  // console.log(userId);
 
   return (
     <>

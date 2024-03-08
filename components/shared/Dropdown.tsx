@@ -40,11 +40,10 @@ const Dropdown = ({ onChangeHandler, value }: DropdownProps) => {
   useEffect(() => {
     const getCategories = async () => {
       const categoryList = await getAllCategory();
-      //console.log(categories);
+
       categoryList && setCategories(categoryList as ICategory[]);
     };
     getCategories();
-    //console.log(categories);
   }, []);
 
   return (
@@ -53,9 +52,9 @@ const Dropdown = ({ onChangeHandler, value }: DropdownProps) => {
         <SelectValue placeholder="Category" defaultValue={""} />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="1" className="select-item p-regular-14">
+        {/* <SelectItem value="1" className="select-item p-regular-14">
           Category
-        </SelectItem>
+        </SelectItem> */}
         <Separator />
         {categories.length > 0 &&
           categories.map((category) => (

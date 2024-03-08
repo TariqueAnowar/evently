@@ -12,6 +12,7 @@ type CollectionProps = {
   page: number | string;
   totalPages?: number;
   urlParamName?: string;
+  userId: string;
 };
 const Collection = ({
   data,
@@ -22,6 +23,7 @@ const Collection = ({
   page,
   totalPages = 0,
   urlParamName,
+  userId,
 }: CollectionProps) => {
   return (
     <>
@@ -37,6 +39,7 @@ const Collection = ({
                     event={event}
                     hasOrderLink={hasOrderLink}
                     hidePrice={hidePrice}
+                    userId={userId}
                   />
                 </li>
               );
