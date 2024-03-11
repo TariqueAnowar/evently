@@ -13,9 +13,6 @@ export default async function Home() {
     limit: 10,
   });
 
-  const { sessionClaims } = auth();
-  const userId = sessionClaims?.mongodb_userId as string;
-
   return (
     <>
       <section className="bg-primary-50 bg-dotted-pattern bg-contain py-5 md:py-10">
@@ -62,7 +59,6 @@ export default async function Home() {
           page={1}
           totalPages={2}
           urlParamName=""
-          userId={userId}
         />
       </section>
     </>

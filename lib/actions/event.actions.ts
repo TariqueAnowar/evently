@@ -108,6 +108,43 @@ export const getAllEvents = async ({
   }
 };
 
+// Get events by userId/organizer
+
+type GetEventsByOrganizerParams = {
+  userId: string;
+  limit?: number;
+  page?: number;
+};
+
+export async function getEventsByOrganizer({
+  userId,
+  limit = 3,
+  page = 1,
+}: GetEventsByOrganizerParams) {
+  try {
+    await connectToDatabase();
+
+    const skipAmount = (page - 1) * limit;
+    const condition = {
+      organizer: userId,
+    };
+    const eventsQuery = Event.find(condition)
+      .sort({ createdAt: "desc" })
+      .skip(skipAmount)
+      .limit(limit);
+
+    const events = await populateEvent(eventsQuery);
+    const eventsCount = await Event.countDocuments(condition);
+
+    return {
+      data: JSON.parse(JSON.stringify(events)),
+      totalPages: Math.ceil(eventsCount / limit),
+    };
+  } catch (error) {
+    handleError(error);
+  }
+}
+
 // Get related events by catgory
 
 export type GetRelatedEventsByCategoryParams = {
@@ -142,9 +179,7 @@ export const getRelatedEventsByCategory = async ({
       totalPages: Math.ceil(eventsCount / limit),
     };
   } catch (error) {
-    console.log(error);
-
-    //handleError(error);
+    handleError(error);
   }
 };
 
