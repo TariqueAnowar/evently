@@ -32,6 +32,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "OK", order: newOrder });
   } catch (err: any) {
     console.error(`Webhook Error: ${err.message}`);
-    return new Response("Webhook Error", { status: 200 });
   }
+  return new Response("okay", { status: 200 });
 }
