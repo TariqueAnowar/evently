@@ -20,7 +20,11 @@ export async function POST(request: Request) {
         createdAt: new Date(),
       };
 
-      return new Response(JSON.stringify({ message: "OK", order }), {
+      const jsonResponse = JSON.stringify({ message: "OK", order });
+
+      console.log("JSON Response:", jsonResponse);
+
+      return new Response(jsonResponse, {
         status: 200,
         headers: {
           "Content-Type": "application/json",
@@ -28,9 +32,12 @@ export async function POST(request: Request) {
       });
     }
   } catch (err) {
+    console.error("Webhook error:", err);
+
     return NextResponse.json({ message: "Webhook error", error: err });
   }
 
   // For other events or errors, return a generic response
+  console.log("Generic Response Executed");
   return new Response("Response Executed", { status: 200 });
 }
