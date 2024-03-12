@@ -2,6 +2,9 @@
 
 import Stripe from "stripe";
 import { redirect } from "next/navigation";
+import { handleError } from "../utils";
+import { connectToDatabase } from "../database";
+import Order from "../database/model/order.model";
 
 export type CheckoutOrderParams = {
   eventTitle: string;
@@ -43,5 +46,29 @@ export const checkoutOrder = async (order: CheckoutOrderParams) => {
     redirect(session.url!);
   } catch (err) {
     throw err;
+  }
+};
+
+export type CreateOrderParams = {
+  stripeId: string;
+  eventId: string;
+  buyerId: string;
+  totalAmount: string;
+  createdAt: Date;
+};
+
+export const createOrder = async (order: CreateOrderParams) => {
+  try {
+    await connectToDatabase();
+
+    const newOrder = await Order.create({
+      ...order,
+      event: order.eventId,
+      buyer: order.buyerId,
+    });
+
+    return JSON.parse(JSON.stringify(newOrder));
+  } catch (err) {
+    handleError(err);
   }
 };
