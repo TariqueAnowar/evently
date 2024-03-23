@@ -118,13 +118,13 @@ type GetEventsByOrganizerParams = {
 
 export async function getEventsByOrganizer({
   userId,
-  limit = 3,
-  page = 1,
+  limit = 6,
+  page,
 }: GetEventsByOrganizerParams) {
   try {
     await connectToDatabase();
 
-    const skipAmount = (page - 1) * limit;
+    const skipAmount = (Number(page) - 1) * limit;
     const condition = {
       organizer: userId,
     };

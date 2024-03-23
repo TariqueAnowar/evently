@@ -4,15 +4,16 @@ export interface IOrder extends Document {
   createdAt: Date;
   stripeId: string;
   totalAmount?: string;
+  customerDetailsEmails?: String;
   event: { _id: string; title: string };
   buyer: { _id: string; firstName: string; lastName: string };
 }
-
 
 const OrderSchema = new Schema({
   createdAt: { type: Date, default: Date.now },
   stripeId: { type: String, required: true, unique: true },
   totalAmount: { type: String },
+  customerDetailsEmails: { type: String },
   event: { type: Schema.Types.ObjectId, ref: "Event" },
   buyer: { type: Schema.Types.ObjectId, ref: "User" },
 });
