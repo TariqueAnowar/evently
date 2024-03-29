@@ -8,6 +8,20 @@ import User from "../database/model/user.model";
 import { handleError } from "../utils";
 import { UTApi } from "uploadthing/server";
 
+const getCategoryByName = async (name: string) => {
+  return Category.findOne({ name: { $regex: name, $options: "i" } });
+};
+
+const populateEvent = (query: any) => {
+  return query
+    .populate({
+      path: "organizer",
+      model: User,
+      select: "_id firstName lastName",
+    })
+    .populate({ path: "category", model: Category, select: "_id name" });
+};
+
 type CreateEventParams = {
   event: {
     title: string;
@@ -49,17 +63,6 @@ export const createEvent = async ({
   }
 };
 
-// Populate/fetch complete details
-const populateEvent = async (query: any) => {
-  return query
-    .populate({
-      path: "organizer",
-      model: User,
-      select: "_id firstName lastName",
-    })
-    .populate({ path: "category", model: Category, select: "_id name" });
-};
-
 // Get a single event
 export const getEventById = async (eventId: string) => {
   try {
@@ -91,13 +94,25 @@ export const getAllEvents = async ({
   try {
     await connectToDatabase();
 
-    const condition = {};
-    const eventsQuery = Event.find(condition)
+    const titleCondition = query
+      ? { title: { $regex: query, $options: "i" } }
+      : {};
+    const categoryCondition = category
+      ? await getCategoryByName(category)
+      : null;
+    const conditions = {
+      $and: [
+        titleCondition,
+        categoryCondition ? { category: categoryCondition._id } : {},
+      ],
+    };
+    const skipAmount = (Number(page) - 1) * limit;
+    const eventsQuery = Event.find(conditions)
       .sort({ createdAt: "desc" })
-      .skip(0)
+      .skip(skipAmount)
       .limit(limit);
     const events = await populateEvent(eventsQuery);
-    const eventsCount = await Event.countDocuments(condition);
+    const eventsCount = await Event.countDocuments(conditions);
 
     return {
       data: JSON.parse(JSON.stringify(events)),

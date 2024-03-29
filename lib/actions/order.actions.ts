@@ -167,6 +167,7 @@ export async function getOrdersByEvent({
           _id: 1,
           totalAmount: 1,
           createdAt: 1,
+          customerDetailsEmails: 1,
           eventTitle: "$event.title",
           eventId: "$event._id",
           buyer: {

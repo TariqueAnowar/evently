@@ -109,6 +109,7 @@ export type IOrderItem = {
   _id: string;
   totalAmount: string;
   createdAt: Date;
+  customerDetailsEmails: string;
   eventTitle: string;
   eventId: string;
   buyer: string;

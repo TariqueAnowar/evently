@@ -4,6 +4,7 @@ import { Form } from "../ui/form";
 import { Button } from "../ui/button";
 import { loadStripe } from "@stripe/stripe-js";
 import { checkoutOrder } from "@/lib/actions/order.actions";
+import Link from "next/link";
 
 // Make sure to call `loadStripe` outside of a component’s render to avoid
 // recreating the `Stripe` object on every render.
@@ -12,6 +13,8 @@ const stripePromise = loadStripe(
 );
 
 const Checkout = ({ event, userId }: { event: IEvent; userId: string }) => {
+  console.log({ event, userId });
+
   const onCheckout = async () => {
     const order = {
       eventTitle: event.title,
@@ -39,10 +42,24 @@ const Checkout = ({ event, userId }: { event: IEvent; userId: string }) => {
   }, []);
 
   return (
-    <form action={onCheckout} method="pst">
-      <Button type="submit" role="link" size="lg" className="button sm:w-fit">
-        {event.isFree ? "Get Tickets" : "Buy Tickets"}
-      </Button>
+    <form action={onCheckout}>
+      {event.organizer?._id === userId ? (
+        ""
+      ) : (
+        // <Link href={`/orders?eventId=${event._id}`}>
+        //   <Button
+        //     role="link"
+        //     size="lg"
+        //     className="button sm:w-fit"
+        //     type="button"
+        //   >
+        //     <p>Buyer Details</p>
+        //   </Button>
+        // </Link>
+        <Button type="submit" role="link" size="lg" className="button sm:w-fit">
+          {event.isFree ? "Get Tickets" : "Buy Tickets"}
+        </Button>
+      )}
     </form>
   );
 };

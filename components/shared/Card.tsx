@@ -20,6 +20,8 @@ const Card = ({ event, hasOrderLink, hidePrice }: CardProps) => {
   const { sessionClaims } = auth();
   const userId = sessionClaims?.mongodb_userId as string;
 
+  // console.log({ sessionClaims });
+
   const isEventCreator = userId === event.organizer?._id.toString();
 
   return (
@@ -95,7 +97,6 @@ const Card = ({ event, hasOrderLink, hidePrice }: CardProps) => {
               type="button"
             >
               <p>Buyer Details</p>
-              
             </button>
           </Link>
         ) : (
