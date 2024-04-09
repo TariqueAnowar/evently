@@ -23,12 +23,13 @@ const eventDetails = async ({
   params: { id },
   searchParams,
 }: SearchParamProps) => {
+  const page = Number(searchParams.page) || 1;
   const event = await getEventById(id);
 
   const relatedEvents = await getRelatedEventsByCategory({
     categoryId: event.category._id,
     eventId: event._id,
-    page: searchParams.page as string,
+    page: page,
   });
 
   return (
@@ -68,7 +69,7 @@ const eventDetails = async ({
             </div>
 
             {/* space for checkout/buy button */}
-            <CheckoutButton event={event}/>
+            <CheckoutButton event={event} />
 
             <div className="flex flex-col gap-5">
               <div className="flex gap-2 md:gap-3">
@@ -117,9 +118,9 @@ const eventDetails = async ({
           emptyTitle="No events found"
           emptyStateSubtext="Come back later"
           collectionType="ALL_EVENTS"
-          limit={6}
-          page={1}
-          totalPages={2}
+          limit={3}
+          page={page}
+          totalPages={relatedEvents?.totalPages}
           urlParamName=""
         />
       </section>
